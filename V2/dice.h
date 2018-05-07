@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <random>
 #include <chrono>
@@ -14,13 +15,10 @@ public:
     void saveLast(unsigned int&);
     string loadLast(ifstream&);
     void print(unsigned int&);
-private:
-    unsigned int min = 1;
-    unsigned int max;
 };
 
 void menu();
 void gamemenu();
-void play();
+bool play();
 
 #endif
