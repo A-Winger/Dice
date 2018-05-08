@@ -6,22 +6,19 @@ int main(){
     char c;
     cout << "\nWelcome to NAME.";
     while(!exit){
-        cout << "\nPress 'M' to print the menu, 'Q' to quit.";
+        menu();
+        //cout << "\nPress 'M' to print the menu, 'Q' to quit.";
         cout << "\n--> ";
         cin >> c;
         c = tolower(c);
         switch(c){
             case 'q':{ exit = true; break; }
-            case 'm':{ menu(); break; }
+            //case 'm':{ menu(); break; }
             case 'a':{ play(); break; }
-            default: {
-                cerr << "\nUnknown command, please retry: ";
-                cin >> c;
-                c = tolower(c);
-            }
+            default: { cerr << "\nUnknown command, please pay attention!\n"; }
         }
     }
-    cout << "\nGoodbye.\n";
+    cout << "\nGoodbye. :D\n\n";
     return 0;
 }
 
@@ -36,7 +33,7 @@ void menu(){
 
 void gamemenu(){
     cout << "\n\nWhat type of dice?";
-    cout << "\nQ)\tQuit.";
+    cout << "\nQ)\tTurn to the menu.";
     cout << "\nA)\tThrow D4.";
     cout << "\nB)\tThrow D6.";
     cout << "\nC)\tThrow D8.";
@@ -44,7 +41,7 @@ void gamemenu(){
     cout << "\nE)\tThrow D12.";
     cout << "\nF)\tThrow D20.";
     cout << "\n\nHow many times?";
-    cout << "\n(type) _ (times) --> ";
+    cout << "\n(type) _ (times) \n--> ";
 }
 
 int Dice::roll(unsigned int& max){
@@ -86,11 +83,11 @@ void Dice::print(unsigned int& res){
     if(res < 0){
         cerr << "\nError: bad limits.\n\n";
     }else{
-        cout << "\nThe result is: " << res << ".\n";
+        cout << "\n\nThe result is: " << res << ".\n";
     }
 }
 
-bool play(){
+void play(){
     Dice d;
     char c;
     int n;
@@ -104,14 +101,9 @@ bool play(){
         case 'd': { res = d.roll(type = 10); break; }
         case 'e': { res = d.roll(type = 12); break; }
         case 'f': { res = d.roll(type = 20); break; }
-        case 'q': { return true; break; }
-        default:{
-            cerr << "\nUnknown command, please retry: ";
-            cin >> c;
-            c = tolower(c);
-        }
+        case 'q': { return; }
+        default:{ cerr << "\nUnknown command, please pay attention!\n"; }
     }
     d.saveLast(res);
     d.print(res);
-    return false;
 }

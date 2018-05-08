@@ -19,6 +19,6 @@ public:
 
 void menu();
 void gamemenu();
-bool play();
+void play();
 
 #endif
