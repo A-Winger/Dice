@@ -9,13 +9,14 @@ int main(){
         menu();
         //cout << "\nPress 'M' to print the menu, 'Q' to quit.";
         cout << "\n--> ";
+        cin.clear();
         cin >> c;
         c = tolower(c);
         switch(c){
             case 'q':{ exit = true; break; }
             //case 'm':{ menu(); break; }
             case 'a':{ play(); break; }
-            default: { cerr << "\nUnknown command, please pay attention!\n"; }
+            default: { cerr << "\nWARNING: Unknown command, please pay attention!\n"; }
         }
     }
     cout << "\nGoodbye. :D\n\n";
@@ -31,17 +32,20 @@ void menu(){
     cout << endl;
 }
 
-void gamemenu(){
+void what(){
     cout << "\n\nWhat type of dice?";
-    cout << "\nQ)\tTurn to the menu.";
-    cout << "\nA)\tThrow D4.";
-    cout << "\nB)\tThrow D6.";
-    cout << "\nC)\tThrow D8.";
-    cout << "\nD)\tThrow D10.";
-    cout << "\nE)\tThrow D12.";
-    cout << "\nF)\tThrow D20.";
-    cout << "\n\nHow many times?";
-    cout << "\n(type) _ (times) \n--> ";
+    cout << "\nD4) \tThrow D4.";
+    cout << "\nD6) \tThrow D6.";
+    cout << "\nD8) \tThrow D8.";
+    cout << "\nD10)\tThrow D10.";
+    cout << "\nD12)\tThrow D12.";
+    cout << "\nD20)\tThrow D20.";
+    cout << "\n--> ";
+}
+
+void howMuch(){
+    cout << "\n\nHow many throws? (positive integer)";
+    cout << "\n--> ";
 }
 
 int Dice::roll(unsigned int& max){
@@ -54,7 +58,7 @@ int Dice::roll(unsigned int& max){
     return result;
 }
 
-void Dice::saveLast(unsigned int& res){
+void Dice::saveLast(string& res){
     ofstream save("savefile.txt");
     if(save.is_open()){
         save << res;
@@ -65,7 +69,7 @@ void Dice::saveLast(unsigned int& res){
 string Dice::loadLast(ifstream& save){
     string line;
     unsigned int n;
-    Dice d;
+    //Dice d;
     if(save.is_open()){
         while(getline(save, line) && save.good()){
             save >> line;
@@ -74,19 +78,13 @@ string Dice::loadLast(ifstream& save){
     istringstream itmp(line);
     itmp >> n;
 
-    d.print(n);
+    cout << "\nThe last throw is: " << n << ".\n";
+    
     save.close();
     return line;
 }
 
-void Dice::print(unsigned int& res){
-    if(res < 0){
-        cerr << "\nError: bad limits.\n\n";
-    }else{
-        cout << "\n\nThe result is: " << res << ".\n";
-    }
-}
-
+/*
 void play(){
     Dice d;
     char c;
@@ -106,4 +104,64 @@ void play(){
     }
     d.saveLast(res);
     d.print(res);
+}
+*/
+
+void play(){
+    Dice d;
+    string dice;
+    int n;
+    unsigned int res, type;
+    what();
+    cin >> dice;
+    cin.clear();
+    normalize(dice);
+    int t = diceType(dice);
+    switch(t){
+        case 0: { type = 4; break; }
+        case 1: { type = 6; break; }
+        case 2: { type = 8; break; }
+        case 3: { type = 10; break; }
+        case 4: { type = 12; break; }
+        case 5: { type = 20; break; }
+        case 6: { cerr << "\n\nERROR: Invalid dice value.\n"; return; }
+    }
+    howMuch();
+    cin >> n;
+    cin.clear();
+    if(n > 0){
+        string result;
+        for(int i = 0; i < n; i++){
+            res = d.roll(type);
+            cout << "\nRoll #" << (i + 1) << ": " << res << ".";
+            ostringstream otmp;
+            otmp << " " << res;
+            result.append(otmp.str());
+            d.saveLast(result);
+        }
+    }else{ cerr << "\nERROR: Invalid throws value.\n"; }
+}
+
+Type diceType(string s){
+    if(s == "d4"){
+        return d4;
+    }if(s == "d6"){
+        return d6;
+    }if(s == "d8"){
+        return d8;
+    }if(s == "d10"){
+        return d10;
+    }if(s == "d12"){
+        return d12;
+    }if(s == "d20"){
+        return d20;
+    }else{
+        cerr << "\nInvalid type of dice!\n";
+        return DICEFAIL;
+    }
+}
+
+string normalize(string str){
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
 }
