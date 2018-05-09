@@ -116,15 +116,15 @@ void play(){
     cin >> dice;
     cin.clear();
     normalize(dice);
-    int t = diceType(dice);
+    Type t = diceType(dice);
     switch(t){
-        case 0: { type = 4; break; }
-        case 1: { type = 6; break; }
-        case 2: { type = 8; break; }
-        case 3: { type = 10; break; }
-        case 4: { type = 12; break; }
-        case 5: { type = 20; break; }
-        case 6: { cerr << "\n\nERROR: Invalid dice value.\n"; return; }
+        case d4: { type = 4; break; }
+        case d6: { type = 6; break; }
+        case d8: { type = 8; break; }
+        case d10: { type = 10; break; }
+        case d12: { type = 12; break; }
+        case d20: { type = 20; break; }
+        case DICEFAIL: { cerr << "\n\nERROR: Invalid dice value.\n"; return; }
     }
     howMuch();
     cin >> n;
@@ -142,7 +142,7 @@ void play(){
     }else{ cerr << "\nERROR: Invalid throws value.\n"; }
 }
 
-Type diceType(string s){
+Type diceType(string& s){
     if(s == "d4"){
         return d4;
     }if(s == "d6"){
@@ -161,7 +161,7 @@ Type diceType(string s){
     }
 }
 
-string normalize(string str){
+string normalize(string& str){
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }

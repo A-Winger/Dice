@@ -22,7 +22,7 @@ void menu();
 void what();
 void howMuch();
 void play();
-string normalize(string);
-Type diceType(string);
+string normalize(string&);
+Type diceType(string&);
 
 #endif

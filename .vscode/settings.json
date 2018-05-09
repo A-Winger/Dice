@@ -6,6 +6,14 @@
         "random": "cpp",
         "ratio": "cpp",
         "fstream": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "iosfwd": "cpp",
+        "__bit_reference": "cpp",
+        "__split_buffer": "cpp",
+        "initializer_list": "cpp",
+        "iterator": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }
