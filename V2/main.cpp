@@ -7,15 +7,15 @@ int main(){
     cout << "\nWelcome to NAME.";
     while(!exit){
         menu();
-        //cout << "\nPress 'M' to print the menu, 'Q' to quit.";
         cout << "\n--> ";
+        cin.clear();
         cin >> c;
         c = tolower(c);
         switch(c){
             case 'q':{ exit = true; break; }
-            //case 'm':{ menu(); break; }
             case 'a':{ play(); break; }
-            default: { cerr << "\nUnknown command, please pay attention!\n"; }
+            case 'b':{ print(); break; }
+            default: { cerr << "\nWARNING: Unknown command, please pay attention!\n"; }
         }
     }
     cout << "\nGoodbye. :D\n\n";
@@ -31,17 +31,20 @@ void menu(){
     cout << endl;
 }
 
-void gamemenu(){
+void what(){
     cout << "\n\nWhat type of dice?";
-    cout << "\nQ)\tTurn to the menu.";
-    cout << "\nA)\tThrow D4.";
-    cout << "\nB)\tThrow D6.";
-    cout << "\nC)\tThrow D8.";
-    cout << "\nD)\tThrow D10.";
-    cout << "\nE)\tThrow D12.";
-    cout << "\nF)\tThrow D20.";
-    cout << "\n\nHow many times?";
-    cout << "\n(type) _ (times) \n--> ";
+    cout << "\nD4) \tThrow D4.";
+    cout << "\nD6) \tThrow D6.";
+    cout << "\nD8) \tThrow D8.";
+    cout << "\nD10)\tThrow D10.";
+    cout << "\nD12)\tThrow D12.";
+    cout << "\nD20)\tThrow D20.";
+    cout << "\n--> ";
+}
+
+void howMuch(){
+    cout << "\n\nHow many throws? (positive integer)";
+    cout << "\n--> ";
 }
 
 int Dice::roll(unsigned int& max){
@@ -54,7 +57,7 @@ int Dice::roll(unsigned int& max){
     return result;
 }
 
-void Dice::saveLast(unsigned int& res){
+void Dice::saveLast(string& res){
     ofstream save("savefile.txt");
     if(save.is_open()){
         save << res;
@@ -65,45 +68,78 @@ void Dice::saveLast(unsigned int& res){
 string Dice::loadLast(ifstream& save){
     string line;
     unsigned int n;
-    Dice d;
     if(save.is_open()){
         while(getline(save, line) && save.good()){
             save >> line;
         } 
     }
-    istringstream itmp(line);
-    itmp >> n;
-
-    d.print(n);
     save.close();
     return line;
 }
 
-void Dice::print(unsigned int& res){
-    if(res < 0){
-        cerr << "\nError: bad limits.\n\n";
+void play(){
+    Dice d;
+    string dice;
+    int n;
+    unsigned int res, type;
+    what();
+    cin >> dice;
+    cin.clear();
+    normalize(dice);
+    Type t = diceType(dice);
+    switch(t){
+        case d4: { type = 4; break; }
+        case d6: { type = 6; break; }
+        case d8: { type = 8; break; }
+        case d10: { type = 10; break; }
+        case d12: { type = 12; break; }
+        case d20: { type = 20; break; }
+        case DICEFAIL: { cerr << "\n\nERROR: Invalid dice value.\n"; return; }
+    }
+    howMuch();
+    cin >> n;
+    cin.clear();
+    if(n > 0){
+        string result;
+        for(int i = 0; i < n; i++){
+            res = d.roll(type);
+            cout << "\nRoll #" << (i + 1) << ": " << res << ".";
+            ostringstream otmp;
+            otmp << " " << res;
+            result.append(otmp.str());
+            d.saveLast(result);
+        }
+    }else{ cerr << "\nERROR: Invalid throws value.\n"; }
+}
+
+void print(){
+    Dice d;
+    string str;
+    ifstream sf("savefile.txt");
+    str = d.loadLast(sf);
+    cout << "\nThe last roll results are: " << str << ".\n";
+}
+
+Type diceType(string& s){
+    if(s == "d4"){
+        return d4;
+    }if(s == "d6"){
+        return d6;
+    }if(s == "d8"){
+        return d8;
+    }if(s == "d10"){
+        return d10;
+    }if(s == "d12"){
+        return d12;
+    }if(s == "d20"){
+        return d20;
     }else{
-        cout << "\n\nThe result is: " << res << ".\n";
+        cerr << "\nInvalid type of dice!\n";
+        return DICEFAIL;
     }
 }
 
-void play(){
-    Dice d;
-    char c;
-    int n;
-    unsigned int res, type;
-    gamemenu();
-    cin >> c >> n;    
-    switch(c){
-        case 'a': { res = d.roll(type = 4); break; }
-        case 'b': { res = d.roll(type = 6); break; }
-        case 'c': { res = d.roll(type = 8); break; }
-        case 'd': { res = d.roll(type = 10); break; }
-        case 'e': { res = d.roll(type = 12); break; }
-        case 'f': { res = d.roll(type = 20); break; }
-        case 'q': { return; }
-        default:{ cerr << "\nUnknown command, please pay attention!\n"; }
-    }
-    d.saveLast(res);
-    d.print(res);
+string normalize(string& str){
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
 }
