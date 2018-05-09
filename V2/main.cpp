@@ -7,15 +7,14 @@ int main(){
     cout << "\nWelcome to NAME.";
     while(!exit){
         menu();
-        //cout << "\nPress 'M' to print the menu, 'Q' to quit.";
         cout << "\n--> ";
         cin.clear();
         cin >> c;
         c = tolower(c);
         switch(c){
             case 'q':{ exit = true; break; }
-            //case 'm':{ menu(); break; }
             case 'a':{ play(); break; }
+            case 'b':{ print(); break; }
             default: { cerr << "\nWARNING: Unknown command, please pay attention!\n"; }
         }
     }
@@ -69,43 +68,14 @@ void Dice::saveLast(string& res){
 string Dice::loadLast(ifstream& save){
     string line;
     unsigned int n;
-    //Dice d;
     if(save.is_open()){
         while(getline(save, line) && save.good()){
             save >> line;
         } 
     }
-    istringstream itmp(line);
-    itmp >> n;
-
-    cout << "\nThe last throw is: " << n << ".\n";
-    
     save.close();
     return line;
 }
-
-/*
-void play(){
-    Dice d;
-    char c;
-    int n;
-    unsigned int res, type;
-    gamemenu();
-    cin >> c >> n;    
-    switch(c){
-        case 'a': { res = d.roll(type = 4); break; }
-        case 'b': { res = d.roll(type = 6); break; }
-        case 'c': { res = d.roll(type = 8); break; }
-        case 'd': { res = d.roll(type = 10); break; }
-        case 'e': { res = d.roll(type = 12); break; }
-        case 'f': { res = d.roll(type = 20); break; }
-        case 'q': { return; }
-        default:{ cerr << "\nUnknown command, please pay attention!\n"; }
-    }
-    d.saveLast(res);
-    d.print(res);
-}
-*/
 
 void play(){
     Dice d;
@@ -140,6 +110,14 @@ void play(){
             d.saveLast(result);
         }
     }else{ cerr << "\nERROR: Invalid throws value.\n"; }
+}
+
+void print(){
+    Dice d;
+    string str;
+    ifstream sf("savefile.txt");
+    str = d.loadLast(sf);
+    cout << "\nThe last roll results are: " << str << ".\n";
 }
 
 Type diceType(string& s){
